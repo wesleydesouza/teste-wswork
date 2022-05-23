@@ -41,9 +41,14 @@ export const Form = styled.form`
         animation-duration: 2s;
         animation-fill-mode: forwards
     }
+    @media(max-width: 768px) {
+        
+        width:90%;
+    }
     @media(max-width: 480px) {
+        width:80%;
         div{
-            width: 90% ;
+            width: 100% ;
         }
     }
 `;

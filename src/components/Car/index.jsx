@@ -21,7 +21,7 @@ const Car = () => {
             <h1>{cars.filter(car => car.id == id).map(car => 
                 <ContainerCard key={car.id}>
                  <h3>{car.marca_nome} {car.nome_modelo}</h3>
-                 <img src={imgCar}></img>
+                 <img src={imgCar} alt="Car"></img>
                  <p>Tipo de Combustível: {car.combustivel}</p>
                  <p>Ano: {car.ano}</p>
                  <p>Portas: {car.num_portas}</p>

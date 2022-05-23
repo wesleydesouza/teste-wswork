@@ -12,22 +12,23 @@ import {ContainerCenter,
         ContainerCard,
         Form} 
         from "./CarListStyle"
-
+const initialValue = {
+    model: "",
+    mark: "",
+    fuel: "gasolina",
+    year: "",
+    door: 2,
+    color: "branco",
+    fipe: ""
+}
 const CarList = () => {
 
+    const [form, setForm] = useState(initialValue)
     const [cars, setCars] = useState([]);
     const [marks, setMarks] = useState(["VW", "TOYOTA", "FORD", "FIAT"])
-    const [model, setModel] = useState("");
-    const [mark, setMark] = useState("");
-    const [fuel, setFuel] = useState("gasolina");
-    const [year, setYear] = useState(0);
-    const [door, setDoor] = useState(2);
-    const [color, setColor] = useState("branco");
-    const [fipe, setFipe] = useState(10000);
-    const [error, setError] = useState({ message: ""})
-
     
-
+    const valueInput = event => setForm({...form, [event.target.name]: event.target.value});
+    
     useEffect(() => {
        const loadCars = async() => {
             const response = await axios.get("cars.json");
@@ -39,24 +40,28 @@ const CarList = () => {
     
     const newCar = () => {
         
-        setMarks([mark ,...marks])
+        
         setCars([...cars,{id: Math.random() * 10,
             marca_id: 1,
-            marca_nome: mark,
-            nome_modelo: model,
-            ano: year,
-            combustivel: fuel,
-            num_portas: door,
-            valor_fipe: fipe,
-            cor: color,
+            marca_nome: form.mark,
+            nome_modelo: form.model,
+            ano: form.year,
+            combustivel: form.fuel,
+            num_portas: form.door,
+            valor_fipe: form.fipe,
+            cor: form.color,
             timestamp_cadastro: Date.now()}])
+            
+           if(marks.every(markp => markp !== form.mark)){
+               setMarks([form.mark,...marks]);
+           }
         }
         
         const showCars = (mark) => {
         return (cars.filter(car => car.marca_nome === mark).map(car => 
             <ContainerCard key={car.id}>
                  <h3>{car.marca_nome} {car.nome_modelo}</h3>
-                 <img src={imgCar}></img>
+                 <img src={imgCar} alt="Car"></img>
                  <p>Tipo de Combustível: {car.combustivel}</p>
                  <p>Ano: {car.ano}</p>
                  <p>Portas: {car.num_portas}</p>
@@ -69,7 +74,7 @@ const CarList = () => {
 
     const validate = async (event) => {
         event.preventDefault();
-
+        const {model, mark, year, fipe} = form;
         const data = {model, mark, year, fipe};
 
         let validation = await FormValidation(data);
@@ -77,27 +82,28 @@ const CarList = () => {
         if(validation){
             Message("Carro adicionado!", "success");
             newCar();
+            setForm(initialValue);
         }else{
             Message("Preencha os campos corretamente!", "error");
         }
+        
     }
 
     return(
         <section>
             <ToastContainer/>
             <Form onSubmit={validate}>
-                <span>{error.message}</span>
                 <div>
                     <label htmlFor="model">Modelo do carro:</label>
-                    <input type="text" name="model" placeholder="" onChange={event => setModel(event.target.value)} required></input>
+                    <input type="text" name="model" placeholder="" onChange={valueInput} value={form.model} required></input>
                 </div>
                 <div>
                     <label htmlFor="mark">Marca do carro:</label>
-                    <input type="text" name="mark" placeholder="" onChange={event => setMark(event.target.value)} required></input>
+                    <input type="text" name="mark" placeholder="" onChange={valueInput} value={form.mark} required></input>
                 </div>
                 <div>
                     <label htmlFor="fuel">Combustível do carro:</label>
-                    <select name="fuel" onChange={event => setFuel(event.target.value)}>
+                    <select name="fuel" onChange={valueInput} value={form.fuel}>
                         <option value="gasoline" defaultValue>Gasolina</option>
                         <option value="alcool" >Alcool</option>
                         <option value="flex" >Flex</option>
@@ -105,18 +111,18 @@ const CarList = () => {
                 </div>
                 <div>
                     <label htmlFor="year">Ano do carro:</label>
-                    <input type="Number" name="year" placeholder="" onChange={event => setYear(event.target.value)} required></input>
+                    <input type="Number" name="year" placeholder="" onChange={valueInput} value={form.year} required></input>
                 </div>
                 <div>
                     <label htmlFor="door">Num. de portas:</label>
-                    <select name="door" onChange={event => setDoor(event.target.value)}>
+                    <select name="door" onChange={valueInput} value={form.door}>
                         <option value={2} defaultValue>2</option>
                         <option value="4">4</option>
                     </select>
                 </div>
                 <div>
                     <label htmlFor="color">Cor do carro:</label>
-                    <select name="color" onChange={event => setColor(event.target.value)}>
+                    <select name="color" onChange={valueInput} value={form.color}>
                         <option value="Branca" defaultValue>Branco</option>
                         <option value="Cinza">Cinza</option>
                         <option value="Preto">Preto</option>
@@ -131,12 +137,13 @@ const CarList = () => {
                 </div>
                 <div>
                     <label htmlFor="fipe">Valor de fipe:</label>
-                    <input type="Number" name="fipe"  onChange={event => setFipe(event.target.value)} required></input>
+                    <input type="Number" name="fipe"  onChange={valueInput} value={form.fipe} required></input>
                 <button type="submit">Criar Carro</button>
                 </div>
             </Form>    
             <ContainerCenter>
                 {marks.map(mark => showCars(mark))}
+                
             </ContainerCenter>
         </section>
         

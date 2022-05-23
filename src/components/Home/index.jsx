@@ -23,7 +23,7 @@ const Home = () => {
             number4Length = Math.round(string).toFixed(0)
            return number4Length;
         }
-        if( string.length < 4 && string != 170){
+        if( string.length < 4 && string !== "170"){
             string = Math.round(string).toFixed(3)
             return string    
         }
@@ -34,7 +34,7 @@ const Home = () => {
         return(
             <ContainerCard key={car.id}>
                 <h3>{car.marca_nome} {car.nome_modelo}</h3>
-                <img src={imgCar}></img>
+                <img src={imgCar} alt="Car"></img>
                 <p>Ano: {car.ano}</p>
                 <h3>valor fipe: R$ {car.valor_fipe}</h3>
                 <Link to={`/car/${car.id}`}><button>Detalhes</button></Link>
